@@ -78,6 +78,8 @@ const Header = async ({ isAdminPage = false }) => {
 
 
 {/* this  piece of code is used to show the user button when user is sign this button is your email profile when u click on it u got option of sign out  */}
+
+
 <SignedIn>
   <UserButton 
   appearance={{
