@@ -6,6 +6,7 @@ import { Camera, Upload } from 'lucide-react';
 import { Button } from './ui/button';
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
+import { useRouter } from 'next/navigation';
 
 const HomeSearch = () => {
 
@@ -18,9 +19,34 @@ const HomeSearch = () => {
 const[imagePreview,setImagePreview]=useState("");
 const [isUploading, setIsUploading] = useState(false);
 
-  const handleTextSubmit = (e) => {};
+const router= useRouter();
 
-  const handleImageSearch = (e) => {};
+
+  const handleTextSubmit = (e) => {
+
+    e.preventDefault();
+// if ther is no search  image then throw a toast
+ if (!searchTerm.trim()) {
+      toast.error("Please enter a search term");
+      return;
+    }
+
+    router.push(`/cars?search=${encodeURIComponent(searchTerm)}`);
+  };
+
+
+
+  // Handle image search submissions
+  const handleImageSearch = async (e) => {
+    e.preventDefault();
+    if (!searchImage) {
+      toast.error("Please upload an image first");
+      return;
+    }
+
+    // Use the processImageFn from useFetch hook
+    await processImageFn(searchImage);
+  };
 
 
    // Handle image upload with react-dropzone
@@ -141,6 +167,20 @@ const [isUploading, setIsUploading] = useState(false);
           </div>
         )}
       </div>
+
+{/* button for image search */}
+
+ {imagePreview && (
+              <Button
+                type="submit"
+                className="w-full mt-2"
+                disabled={isUploading }
+              >
+                {isUploading
+                  ? "Uploading..." : "Search with this Image"}
+              </Button>
+            )}
+
     </form>
   </div>
 )}
