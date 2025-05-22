@@ -19,9 +19,9 @@ export default function Home() {
     <div>
       {/*  1st create Hero section */}
 
-      <section className="relative py-16 md:py-28 dotted-background">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="mb-8">
+      <section className="   py-20 md:py-28 dotted-background">
+        <div className="max-w-4xl mx-auto text-center flex flex-col justify-center">
+          <div className="mb-8 mt-3 ">
             <h1 className="text-5xl md:text-8xl mb-4 gradient-title">
               Find your Dream Car with Vehiql AI
             </h1>
@@ -30,7 +30,9 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Search Component (Client) */}
+          {/* Search Component (Client) 
+                below the find your car 
+                 is render from the home-search*/}
           <HomeSearch />
         </div>
       </section>
