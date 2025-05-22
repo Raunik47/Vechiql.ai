@@ -126,7 +126,7 @@ const [isUploading, setIsUploading] = useState(false);
 
             <div className='flex flex-col items-center'>
 <Upload className='h-12 w-12 text-gray-400 mb-2' />
-            <p>
+            <p className='text-gray-500 mb-2'>
               {isDragActive && !isDragReject
                 ? "Leave the file here to upload"
                 : "Drag & drop a car image or click to select"}
