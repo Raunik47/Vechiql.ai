@@ -125,6 +125,9 @@ const model=genAI.getGenerativeModel({model: "gemini-1.5-flas"});
   }
 }
 
+// function to add car
+
+
 export async function addCar({ carData, images }) {
 
     try {
