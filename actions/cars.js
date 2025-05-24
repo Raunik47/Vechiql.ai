@@ -8,6 +8,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase";
+import { serializeCarData } from "@/lib/helper";
 // import { serializeCarData } from "@/lib/helpers";
 
 
@@ -26,7 +27,7 @@ try {
     }
 
 const genAI= new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model=genAI.getGenerativeModel({model: "gemini-1.5-flas"});
+const model=genAI.getGenerativeModel({model: "gemini-1.5-flash"});
 
 // Convert image file to base64
     const base64Image = await fileToBase64(file); 
@@ -128,8 +129,9 @@ const model=genAI.getGenerativeModel({model: "gemini-1.5-flas"});
   }
 }
 
-// function to add car
 
+
+// function to add car
 
 
 export async function addCar({ carData, images }) {
@@ -229,5 +231,111 @@ export async function addCar({ carData, images }) {
     };
   } catch (error) {
     throw new Error("Error adding car:" + error.message);
+  }
+}
+
+
+// Fetch all cars with simple search
+export async function getCars(search = "") {
+  try {
+    // Build where conditions
+    let where = {};
+
+    // Add search filter
+    if (search) {
+      where.OR = [
+        { make: { contains: search, mode: "insensitive" } },
+        { model: { contains: search, mode: "insensitive" } },
+        { color: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
+    // Execute main query
+    const cars = await db.car.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+    });
+
+    const serializedCars = cars.map(serializeCarData);
+
+    return {
+      success: true,
+      data: serializedCars,
+    };
+  } catch (error) {
+    console.error("Error fetching cars:", error);
+    return {
+      success: false,
+      error: error.message,
+    };
+  }
+}
+
+// Delete a car by ID
+export async function deleteCar(id) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    // First, fetch the car to get its images
+    const car = await db.car.findUnique({
+      where: { id },
+      select: { images: true },
+    });
+
+    if (!car) {
+      return {
+        success: false,
+        error: "Car not found",
+      };
+    }
+
+    // Delete the car from the database
+    await db.car.delete({
+      where: { id },
+    });
+
+    // Delete the images from Supabase storage
+    try {
+      const cookieStore = cookies();
+      const supabase = createClient(cookieStore);
+
+      // Extract file paths from image URLs
+      const filePaths = car.images
+        .map((imageUrl) => {
+          const url = new URL(imageUrl);
+          const pathMatch = url.pathname.match(/\/car-images\/(.*)/);
+          return pathMatch ? pathMatch[1] : null;
+        })
+        .filter(Boolean);
+
+      // Delete files from storage if paths were extracted
+      if (filePaths.length > 0) {
+        const { error } = await supabase.storage
+          .from("car-images")
+          .remove(filePaths);
+
+        if (error) {
+          console.error("Error deleting images:", error);
+          // We continue even if image deletion fails
+        }
+      }
+    } catch (storageError) {
+      console.error("Error with storage operations:", storageError);
+      // Continue with the function even if storage operations fail
+    }
+
+    // Revalidate the cars list page
+    revalidatePath("/admin/cars");
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Error deleting car:", error);
+    return {
+      success: false,
+      error: error.message,
+    };
   }
 }
