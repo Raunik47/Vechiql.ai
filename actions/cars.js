@@ -1,3 +1,6 @@
+
+"use server";
+
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { auth } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
@@ -5,7 +8,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase";
-import { serializeCarData } from "@/lib/helpers";
+// import { serializeCarData } from "@/lib/helpers";
 
 
 // Function to convert File to base64
@@ -126,6 +129,7 @@ const model=genAI.getGenerativeModel({model: "gemini-1.5-flas"});
 }
 
 // function to add car
+
 
 
 export async function addCar({ carData, images }) {

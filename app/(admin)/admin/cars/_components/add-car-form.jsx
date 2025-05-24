@@ -40,6 +40,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useDropzone } from "react-dropzone/";
+import { addCar } from "@/actions/cars";
 
 
 // Predefined options
@@ -110,12 +111,41 @@ const [imageError, setImageError] = useState("");
     },
   });
 
+const {
+  data: addCarResult,
+  loading:addCarLoading,
+  fn:addCarFn,
+}=useFetch(addCar);
+
+  // Handle successful car addition
+  useEffect(() => {
+    if (addCarResult?.success) {
+      toast.success("Car added successfully");
+      router.push("/admin/cars");
+    }
+  }, [addCarResult]);
+
   const onSubmit=async (data)=>{
 
  if (uploadedImages.length === 0) {
       setImageError("Please upload at least one image");
       return;
     }   
+
+     // Prepare data for server action
+    const carData = {
+      ...data,
+      year: parseInt(data.year),
+      price: parseFloat(data.price),
+      mileage: parseInt(data.mileage),
+      seats: data.seats ? parseInt(data.seats) : null,
+    };
+     
+    // Call the addCar function with our useFetch hook
+    await addCarFn({
+      carData,
+      images: uploadedImages,
+    });
   };
  
    // Handle multiple image uploads with Dropzone
@@ -525,12 +555,12 @@ const [imageError, setImageError] = useState("");
                 </div>
 
                  <Button type="submit" className="full md:w-auto"
-                 disabled={true}
+                 disabled={addCarLoading}
                  >
                
                
 
-                  {true ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Adding Car...</> :
+                  {addCarLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Adding Car...</> :
                   "Add Car"
 }
                 </Button>
