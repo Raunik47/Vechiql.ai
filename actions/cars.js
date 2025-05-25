@@ -8,7 +8,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase";
-import { serializeCarData } from "@/lib/helper";
+import { serializeCarData } from "@/lib/helpers";
 // import { serializeCarData } from "@/lib/helpers";
 
 
@@ -333,6 +333,45 @@ export async function deleteCar(id) {
     };
   } catch (error) {
     console.error("Error deleting car:", error);
+    return {
+      success: false,
+      error: error.message,
+    };
+  }
+}
+
+
+
+// Update car status or featured status
+export async function updateCarStatus(id, { status, featured }) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const updateData = {};
+
+    if (status !== undefined) {
+      updateData.status = status;
+    }
+
+    if (featured !== undefined) {
+      updateData.featured = featured;
+    }
+
+    // Update the car
+    await db.car.update({
+      where: { id },
+      data: updateData,
+    });
+
+    // Revalidate the cars list page
+    revalidatePath("/admin/cars");
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Error updating car status:", error);
     return {
       success: false,
       error: error.message,
