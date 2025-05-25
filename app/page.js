@@ -1,3 +1,4 @@
+import { getFeaturedCars } from "@/actions/home";
 import CarCard from "@/components/car-card";
 import HomeSearch from "@/components/home-search";
 import {
@@ -14,7 +15,11 @@ import { ChevronRight, Car, Calendar, Shield } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Home() {
+export default  async function Home() {
+
+
+const featuredCars= await getFeaturedCars();
+
   return (
     <div>
       {/*  1st create Hero section */}
