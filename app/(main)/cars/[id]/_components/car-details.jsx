@@ -50,7 +50,7 @@ const CarDetails = ({ car, testDriveInfo }) => {
 
    return (
   <div>
-    <div>
+    <div className="flex flex-col lg:flex-row gap-8">
     <div className="w-full lg:w-7/12">
       <div className="aspect-video rounded-lg overflow-hidden relative mb-4">
         {car.images && car.images.length > 0 ? (
@@ -68,7 +68,8 @@ const CarDetails = ({ car, testDriveInfo }) => {
         )}
       </div>
     </div>
-    <div></div>
+    
+    
   </div>
     </div>
 );
