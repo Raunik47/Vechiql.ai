@@ -1,32 +1,29 @@
-import { getFeaturedCars } from "@/actions/home";
-import CarCard from "@/components/car-card";
-import HomeSearch from "@/components/home-search";
+import { ChevronRight, Car, Calendar, Shield } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
-
-import { Button } from "@/components/ui/button";
-import { bodyTypes, carMakes, faqItems, featuredCars } from "@/lib/data";
+} from "@/components/ui/accordion";
 import { SignedOut } from "@clerk/nextjs";
-import { ChevronRight, Car, Calendar, Shield } from "lucide-react";
-import Image from "next/image";
+import { getFeaturedCars } from "@/actions/home";
+import { CarCard } from "@/components/car-card";
+
 import Link from "next/link";
+import Image from "next/image";
+import { bodyTypes, carMakes, faqItems } from "@/lib/data";
+import HomeSearch from "@/components/home-search";
 
-export default  async function Home() {
-
-
-const featuredCars= await getFeaturedCars();
+export default async function Home() {
+  const featuredCars = await getFeaturedCars();
 
   return (
-    <div>
-      {/*  1st create Hero section */}
-
-      <section className="   py-20 md:py-28 dotted-background">
-        <div className="max-w-4xl mx-auto text-center flex flex-col justify-center">
-          <div className="mb-8 mt-3 ">
+    <div className="flex flex-col pt-20">
+      {/* Hero Section with Gradient Title */}
+      <section className="relative py-16 md:py-28 dotted-background">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="mb-8">
             <h1 className="text-5xl md:text-8xl mb-4 gradient-title">
               Find your Dream Car with Vehiql AI
             </h1>
@@ -35,14 +32,12 @@ const featuredCars= await getFeaturedCars();
             </p>
           </div>
 
-          {/* Search Component (Client) 
-                below the find your car 
-                 is render from the home-search*/}
+          {/* Search Component (Client) */}
           <HomeSearch />
         </div>
       </section>
 
-      {/* 1st version of our landing page so we have another section */}
+      {/* Featured Cars */}
       <section className="py-12">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
@@ -53,21 +48,15 @@ const featuredCars= await getFeaturedCars();
               </Link>
             </Button>
           </div>
-
-          {/* here we will render our all featured cars */}
-
-          {/* this class name decide how the card look on large ,small and mdm screen */}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {featuredCars.map((car) => {
-              return <CarCard key={car.id} car={car} />;
-            })}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredCars.map((car) => (
+              <CarCard key={car.id} car={car} />
+            ))}
           </div>
         </div>
       </section>
 
-{/* this section is for the car makers company  like ford ,tata,bmw we are taking image from the make folder which is inside the public folder */}
-
+      {/* Browse by Make */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
@@ -78,32 +67,31 @@ const featuredCars= await getFeaturedCars();
               </Link>
             </Button>
           </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {carMakes.map((make) => {
-              return (
-                <Link
-                  key={make.name}
-                  href={`/car?make=${make.name}`}
-                  className="bg-white rounded-lg shadow p-4 text-center hover:shadow-md transition cursor-pointer"
-                >
-                  <div className="h-16  w-auto mx-auto mb-2 relative  ">
-                    <Image
-                      src={make.image}
-                      alt={make.name}
-                      fill
-                      style={{ objectFit: "contain" }}
-                    />
-                  </div>
-                </Link>
-              );
-            })}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {carMakes.map((make) => (
+              <Link
+                key={make.name}
+                href={`/cars?make=${make.name}`}
+                className="bg-white rounded-lg shadow p-4 text-center hover:shadow-md transition cursor-pointer"
+              >
+                <div className="h-16 w-auto mx-auto mb-2 relative">
+                  <Image
+                    src={
+                      make.imageUrl || `/make/${make.name.toLowerCase()}.webp`
+                    }
+                    alt={make.name}
+                    fill
+                    style={{ objectFit: "contain" }}
+                  />
+                </div>
+                <h3 className="font-medium">{make.name}</h3>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
-
- {/* Why Choose Us section  this section  */}
+      {/* Why Choose Us */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold text-center mb-12">
@@ -182,8 +170,7 @@ const featuredCars= await getFeaturedCars();
         </div>
       </section>
 
-
- {/* FAQ Section with Accordion */}
+      {/* FAQ Section with Accordion */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold text-center mb-8">
@@ -200,7 +187,7 @@ const featuredCars= await getFeaturedCars();
         </div>
       </section>
 
-{/* CTA   this is basically call to actiob button Section */}
+      {/* CTA Section */}
       <section className="py-16 dotted-background text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">
@@ -222,8 +209,6 @@ const featuredCars= await getFeaturedCars();
           </div>
         </div>
       </section>
-
-
     </div>
   );
 }
