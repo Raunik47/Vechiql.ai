@@ -7,8 +7,10 @@ import CarDetails from "./_components/car-details";
 
 
 
+
 export async function generateMetadata({ params }) {
   const { id } = await params;
+
   const result = await getCarById(id);
 
   if (!result.success) {
