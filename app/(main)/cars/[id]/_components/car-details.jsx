@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { Badge, Car, Fuel, Gauge, Heart, Share2, Currency, MessageSquare } from "lucide-react";
+import { Badge, Car, Fuel, Gauge, Heart, Share2, Currency, MessageSquare ,LocateFixed,} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/helpers";
@@ -323,7 +323,126 @@ const CarDetails = ({ car, testDriveInfo }) => {
         </div>
       </div>
 
+
+      {/* Specifications Section */}
+<div className="mt-10 p-6 bg-white rounded-xl shadow-md border">
+  <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
+    <Car className="h-6 w-6 text-blue-600" />
+    Vehicle Specifications
+  </h2>
+  <div className="bg-gray-50 rounded-lg p-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {[
+        { label: "Make", value: car.make },
+        { label: "Model", value: car.model },
+        { label: "Year", value: car.year },
+        { label: "Body Type", value: car.bodyType },
+        { label: "Fuel Type", value: car.fuelType },
+        { label: "Transmission", value: car.transmission },
+        { label: "Mileage", value: `${car.mileage.toLocaleString()} miles` },
+        { label: "Color", value: car.color },
+        ...(car.seats ? [{ label: "Seats", value: car.seats }] : []),
+      ].map((spec, idx) => (
+        <div
+          key={idx}
+          className="flex justify-between items-center py-3 px-4 bg-white rounded-md border hover:shadow-sm transition"
+        >
+          <span className="text-sm text-gray-500">{spec.label}</span>
+          <span className="text-sm font-medium text-gray-800">{spec.value}</span>
+        </div>
+      ))}
     </div>
+  </div>
+</div>
+
+    <div className="mt-8 p-6 bg-white rounded-lg shadow-sm">
+  <h2 className="text-2xl font-bold mb-6">Dealership Location</h2>
+  <div className="bg-gray-50 rounded-lg p-6">
+    <div className="flex flex-col md:flex-row gap-6 justify-between">
+      {/* Dealership Name and Address */}
+      <div className="flex items-start gap-3">
+        <LocateFixed className="h-5 w-5 text-blue-600 mt-1 flex-shrink-0" />
+        <div>
+          <h4 className="font-medium">Vehiql Motors</h4>
+          <p className="text-gray-600">
+            {testDriveInfo.dealership?.address || "Not Available"}
+          </p>
+          <p className="text-gray-600 mt-1">
+            Phone: {testDriveInfo.dealership?.phone || "Not Available"}
+          </p>
+          <p className="text-gray-600">
+            Email: {testDriveInfo.dealership?.email || "Not Available"}
+          </p>
+        </div>
+      </div>
+
+      
+            {/* Working Hours */}
+            <div className="md:w-1/2 lg:w-1/3">
+              <h4 className="font-medium mb-2">Working Hours</h4>
+              <div className="space-y-2">
+                {testDriveInfo.dealership?.workingHours
+                  ? testDriveInfo.dealership.workingHours
+                      .sort((a, b) => {
+                        const days = [
+                          "MONDAY",
+                          "TUESDAY",
+                          "WEDNESDAY",
+                          "THURSDAY",
+                          "FRIDAY",
+                          "SATURDAY",
+                          "SUNDAY",
+                        ];
+                        return (
+                          days.indexOf(a.dayOfWeek) - days.indexOf(b.dayOfWeek)
+                        );
+                      })
+                      .map((day) => (
+                        <div
+                          key={day.dayOfWeek}
+                          className="flex justify-between text-sm"
+                        >
+                          <span className="text-gray-600">
+                            {day.dayOfWeek.charAt(0) +
+                              day.dayOfWeek.slice(1).toLowerCase()}
+                          </span>
+                          <span>
+                            {day.isOpen
+                              ? `${day.openTime} - ${day.closeTime}`
+                              : "Closed"}
+                          </span>
+                        </div>
+                      ))
+                  : // Default hours if none provided
+                    [
+                      "Monday",
+                      "Tuesday",
+                      "Wednesday",
+                      "Thursday",
+                      "Friday",
+                      "Saturday",
+                      "Sunday",
+                    ].map((day, index) => (
+                      <div key={day} className="flex justify-between text-sm">
+                        <span className="text-gray-600">{day}</span>
+                        <span>
+                          {index < 5
+                            ? "9:00 - 18:00"
+                            : index === 5
+                            ? "10:00 - 16:00"
+                            : "Closed"}
+                        </span>
+                      </div>
+                    ))}
+              </div>
+            </div>
+          </div>
+    </div>
+  </div>
+</div>
+
+
+  
   );
 };
 
