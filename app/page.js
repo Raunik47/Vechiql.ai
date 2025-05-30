@@ -1,11 +1,6 @@
 import { ChevronRight, Car, Calendar, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+
 import { SignedOut } from "@clerk/nextjs";
 import { getFeaturedCars } from "@/actions/home";
 import { CarCard } from "@/components/car-card";
@@ -14,6 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { bodyTypes, carMakes, faqItems } from "@/lib/data";
 import HomeSearch from "@/components/home-search";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export default async function Home() {
   const featuredCars = await getFeaturedCars();
