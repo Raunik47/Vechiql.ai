@@ -50,6 +50,8 @@ export async function getCarFilters() {
     });
 
     return {
+
+      
       success: true,
       data: {
         makes: makes.map((item) => item.make),
@@ -259,6 +261,9 @@ export async function toggleSavedCar(carId) {
   }
 }
 
+
+
+
 /**
  * Get car details by ID
  */
@@ -302,16 +307,18 @@ export async function getCarById(carId) {
     }
 
     // Check if user has already booked a test drive for this car
-    const existingTestDrive = await db.testDriveBooking.findFirst({
-      where: {
-        carId,
-        userId: dbUser.id,
-        status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+  let existingTestDrive = null;
+
+if (dbUser) {
+  existingTestDrive = await db.testDriveBooking.findFirst({
+    where: {
+      carId,
+      userId: dbUser.id,
+      status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+}
 
     let userTestDrive = null;
 
