@@ -39,7 +39,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useDropzone } from "react-dropzone/";
+import { useDropzone } from "react-dropzone";
 import { addCar, processCarImageWithAI } from "@/actions/cars";
 
 
