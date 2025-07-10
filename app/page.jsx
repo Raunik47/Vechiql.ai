@@ -8,8 +8,10 @@ import { CarCard } from "@/components/car-card";
 import Link from "next/link";
 import Image from "next/image";
 import { bodyTypes, carMakes, faqItems } from "@/lib/data";
-import HomeSearch from "@/components/home-search";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import HomeSearchWrapper from "@/components/HomeSearchWrapper";
+
+
+import FaqAccordion from "@/components/faq-accordion";
 
 export default async function Home() {
   const featuredCars = await getFeaturedCars();
@@ -29,7 +31,7 @@ export default async function Home() {
           </div>
 
           {/* Search Component (Client) */}
-          <HomeSearch />
+          <HomeSearchWrapper />
         </div>
       </section>
 
@@ -172,14 +174,7 @@ export default async function Home() {
           <h2 className="text-2xl font-bold text-center mb-8">
             Frequently Asked Questions
           </h2>
-          <Accordion type="single" collapsible className="w-full">
-            {faqItems.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger>{faq.question}</AccordionTrigger>
-                <AccordionContent>{faq.answer}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <FaqAccordion />
         </div>
       </section>
 
