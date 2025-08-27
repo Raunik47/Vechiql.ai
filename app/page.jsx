@@ -13,6 +13,8 @@ import HomeSearchWrapper from "@/components/HomeSearchWrapper";
 
 import FaqAccordion from "@/components/faq-accordion";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const featuredCars = await getFeaturedCars();
 
