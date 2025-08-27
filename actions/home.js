@@ -32,6 +32,8 @@ export async function getFeaturedCars(limit = 3) {
     return cars.map(serializeCarData);
   } catch (error) {
     throw new Error("Error fetching featured cars:" + error.message);
+    console.log(error);
+    
   }
 }
 
