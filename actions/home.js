@@ -28,10 +28,11 @@ export async function getFeaturedCars(limit = 3) {
       take: limit,
       orderBy: { createdAt: "desc" },
     });
-
+    
+    console.log("works fine");
     return cars.map(serializeCarData);
   } catch (error) {
-    console.log(error);
+    console.log("Error:",error);
     throw new Error("Error fetching featured cars:" + error.message);
     
     
