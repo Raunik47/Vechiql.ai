@@ -16,7 +16,13 @@ import FaqAccordion from "@/components/faq-accordion";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const featuredCars = await getFeaturedCars();
+  let featuredCars = [];
+  try {
+    featuredCars = await getFeaturedCars();
+  } catch (error) {
+    console.error("Error fetching featured cars:", error);
+  }
+
 
   return (
     <div className="flex flex-col pt-20">
